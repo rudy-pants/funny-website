@@ -1,0 +1,171 @@
+{{define "index"}}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A tiny interactive atlas of family-friendly jokes.">
+  <title>{{.Title}}</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#atlas">Skip to the joke atlas</a>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Joke Atlas home">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span>joke atlas</span>
+      </a>
+      <p class="privacy-note"><span class="privacy-dot" aria-hidden="true"></span> No sign-up · no scores · no tracking</p>
+    </header>
+
+    <main id="atlas">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">A field guide to tiny laughs</p>
+          <h1 id="page-title">Wander somewhere<br><em>funny.</em></h1>
+          <p class="hero-lede">Six silly regions. Zero wrong turns. Tap a spot on the map to unlock a fresh pocket of family-friendly comedy.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#map">Start exploring <span aria-hidden="true">↘</span></a>
+            <button class="button button-quiet" type="button" data-reset>Reset the map</button>
+          </div>
+        </div>
+        <div class="hero-note" aria-label="Explorer note">
+          <span class="note-pin" aria-hidden="true">✳</span>
+          <p><strong>Explorer note</strong><br>Every joke is hand-picked for maximum groan and minimum awkwardness.</p>
+        </div>
+      </section>
+
+      <section class="atlas-section" id="map" aria-labelledby="map-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">01 · Pick a place</p>
+            <h2 id="map-heading">The giggle coast</h2>
+          </div>
+          <div class="map-instructions">
+            <span class="instruction-icon" aria-hidden="true">⌁</span>
+            <p><strong>How to explore</strong><br>Click, tap, or tab to a region. Locked places open when you visit.</p>
+          </div>
+        </div>
+
+        <div class="map-card">
+          <div class="map-toolbar">
+            <div class="map-legend" aria-label="Map legend">
+              <span><i class="legend-swatch swatch-open" aria-hidden="true"></i> Open trail</span>
+              <span><i class="legend-swatch swatch-locked" aria-hidden="true"></i> New territory</span>
+            </div>
+            <p class="map-status" data-map-status role="status" aria-live="polite">Dad Joke Dunes is your starting point.</p>
+          </div>
+          <div class="map-stage">
+            <svg viewBox="0 0 1000 540" role="img" aria-labelledby="map-title map-description">
+              <title id="map-title">Illustrated map of the Joke Atlas</title>
+              <desc id="map-description">Six colorful regions sit in a pale green sea. Each region is an interactive link to a joke category.</desc>
+              <rect class="map-water" x="0" y="0" width="1000" height="540" rx="22"></rect>
+              <path class="map-current current-one" d="M44 303C176 279 208 295 337 282S555 275 676 295S835 319 960 288"></path>
+              <path class="map-current current-two" d="M38 484C170 453 234 481 352 457S587 431 711 456S855 479 967 447"></path>
+              <path class="map-route" d="M259 221C311 242 338 208 380 204C424 200 426 240 474 251C528 264 557 218 600 210C649 201 682 220 718 248"></path>
+              <path class="map-route map-route-dashed" d="M305 380C353 346 370 329 402 319C443 306 472 331 518 337C565 342 601 318 643 326C681 333 710 351 735 365"></path>
+              <g class="map-speckles" aria-hidden="true">
+                <circle cx="75" cy="105" r="3"></circle><circle cx="312" cy="78" r="4"></circle><circle cx="666" cy="84" r="3"></circle><circle cx="928" cy="167" r="4"></circle>
+                <circle cx="62" cy="422" r="4"></circle><circle cx="361" cy="485" r="3"></circle><circle cx="649" cy="493" r="4"></circle><circle cx="946" cy="409" r="3"></circle>
+              </g>
+
+              {{range .Regions}}
+              <a class="map-region region-{{.ID}} {{if eq .ID "dunes"}}is-unlocked{{else}}is-locked{{end}}" data-region-id="{{.ID}}" href="/jokes?region={{.ID}}" hx-get="/unlock?region={{.ID}}" hx-target="#discoveries" hx-swap="afterbegin" aria-label="{{.Name}} — {{.Category}}. {{if eq .ID "dunes"}}Open trail{{else}}Locked; activate to unlock{{end}}" tabindex="0">
+                <path class="region-shape" d="{{.Path}}"></path>
+                <path class="region-highlight" d="{{.Path}}"></path>
+                <text class="region-label" x="{{.LabelX}}" y="{{.LabelY}}" text-anchor="middle">{{.Name}}</text>
+                <text class="region-category" x="{{.LabelX}}" y="{{add .LabelY 23}}" text-anchor="middle">{{.Category}}</text>
+              </a>
+              {{end}}
+
+              <g class="map-compass" aria-hidden="true" transform="translate(884 74)">
+                <circle cx="0" cy="0" r="27"></circle>
+                <path d="M0-18L6 4L0 16L-6 4Z"></path>
+                <text x="0" y="-34" text-anchor="middle">N</text>
+              </g>
+              <text class="map-caption" x="45" y="515">THE SEA OF GOOD HUMOR</text>
+            </svg>
+          </div>
+          <div class="map-footer">
+            <span><strong>{{.RegionCount}}</strong> regions charted</span>
+            <span class="map-footer-detail">Tip: the best routes have a little detour.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="discoveries-section" aria-labelledby="discoveries-heading">
+        <div class="section-heading discoveries-heading">
+          <div>
+            <p class="eyebrow">02 · Collect your finds</p>
+            <h2 id="discoveries-heading">Field notes</h2>
+          </div>
+          <p class="discovery-count"><span data-discovery-count>{{if .InitialDiscovery}}1{{else}}0{{end}}</span> / {{.RegionCount}} discoveries</p>
+        </div>
+
+        <div class="discoveries" id="discoveries" aria-live="polite" aria-atomic="false">
+          {{if .InitialDiscovery}}
+            {{template "discovery-card" .InitialDiscovery}}
+          {{else}}
+            <div class="empty-state">
+              <span class="empty-icon" aria-hidden="true">⌖</span>
+              <div><h3>Your notebook is blank.</h3><p>Choose a region above and your first joke will appear here.</p></div>
+            </div>
+          {{end}}
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Made for curious humans with excellent taste in bad jokes.</p>
+      <p>Joke Atlas <span aria-hidden="true">✦</span> Est. whenever you needed a tiny break.</p>
+    </footer>
+  </div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
+{{end}}
+
+{{define "unlock"}}
+  {{template "discovery-card" .}}
+{{end}}
+
+{{define "joke"}}
+  {{template "joke-block" .}}
+{{end}}
+
+{{define "discovery-card"}}
+<article class="discovery-card region-{{.Region.ID}}" data-discovery="{{.Region.ID}}" data-unlocks="{{range .Unlocks}}{{.ID}} {{end}}">
+  <div class="discovery-card-topline">
+    <p class="card-kicker"><span class="card-pin" aria-hidden="true">✦</span> New field note · {{.Region.Name}}</p>
+    <span class="card-number" aria-hidden="true">#{{.Region.LabelX}}</span>
+  </div>
+  <div class="discovery-card-body">
+    <div class="discovery-copy">
+      <h3>{{.Region.Category}}</h3>
+      <p>{{.Region.Blurb}}</p>
+    </div>
+    <div class="joke-shell">
+      {{template "joke-block" .Joke}}
+    </div>
+  </div>
+  <div class="discovery-card-footer">
+    <p class="unlock-message">
+      {{if .Unlocks}}Your detour reveals <strong>{{range $index, $item := .Unlocks}}{{if $index}} and {{end}}{{$item.Name}}{{end}}</strong>.{{else}}You found the edge of the atlas.{{end}}
+    </p>
+    <a class="button button-small" href="/jokes?region={{.Region.ID}}" hx-get="/jokes?region={{.Region.ID}}" hx-target="#joke-{{.Region.ID}}" hx-swap="outerHTML">Another one <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+{{end}}
+
+{{define "joke-block"}}
+<div class="joke-block" id="joke-{{.Region.ID}}" data-joke-region="{{.Region.ID}}">
+  <span class="quote-mark" aria-hidden="true">“</span>
+  <div class="joke-copy">
+    <p class="joke-setup">{{.Joke.Setup}}</p>
+    <p class="joke-punchline">{{.Joke.Punchline}}</p>
+  </div>
+  <span class="quote-mark quote-mark-end" aria-hidden="true">”</span>
+</div>
+{{end}}
