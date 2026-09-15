@@ -1,0 +1,17 @@
+# Local build output and test artifacts
+/funny-jokes
+*.test
+coverage.out
+
+# Runtime configuration and credentials
+.env
+.env.*
+!.env.example
+deploy/*.env
+*.pem
+*.key
+
+# OS/editor noise
+.DS_Store
+.idea/
+.vscode/

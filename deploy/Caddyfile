@@ -1,0 +1,10 @@
+# Replace DOMAIN with the real public DNS name before installing this file.
+# Caddy will obtain and renew HTTPS certificates when ports 80 and 443 are
+# reachable publicly and DOMAIN resolves to this server.
+
+DOMAIN {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	}
+	reverse_proxy 127.0.0.1:8080
+}

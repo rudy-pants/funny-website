@@ -1,0 +1,49 @@
+[Unit]
+Description=Funny Jokes Go web application
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=funnyjokes
+Group=funnyjokes
+WorkingDirectory=/srv/funny-jokes
+EnvironmentFile=/etc/funny-jokes/funny-jokes.env
+Environment=ADDR=127.0.0.1:8080
+ExecStart=/srv/funny-jokes/funny-jokes
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=15s
+KillSignal=SIGTERM
+SyslogIdentifier=funny-jokes
+
+# The application reads ADDR from the environment and binds to localhost.
+# Keep this value in /etc/funny-jokes/funny-jokes.env, not in this repository.
+
+# Least-privilege and filesystem hardening.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectControlGroups=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+RestrictSUIDSGID=true
+RemoveIPC=true
+LockPersonality=true
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+AmbientCapabilities=
+SystemCallArchitectures=native
+UMask=027
+
+[Install]
+WantedBy=multi-user.target
